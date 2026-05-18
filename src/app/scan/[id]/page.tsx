@@ -1,25 +1,29 @@
-import { supabase } from '@/lib/supabase'
-import { notFound } from 'next/navigation'
+'use client'
+
+import { useEffect, useState } from 'react'
+import { useParams, useRouter } from 'next/navigation'
 import ScanForm from '@/components/ScanForm'
 import ScanResultHeader from '@/components/ScanResultHeader'
 import RenderingBanner from '@/components/RenderingBanner'
 import PillarCard from '@/components/PillarCard'
-import RecentScans from '@/components/RecentScans'
 import Link from 'next/link'
 
-export const revalidate = 0
+export default function ScanPage() {
+  const params = useParams()
+  const router = useRouter()
+  const [scan, setScan] = useState<Record<string, unknown> | null>(null)
 
-export default async function ScanPage({ params }: { params: { id: string } }) {
-  const [{ data: scan }, { data: recentScans }] = await Promise.all([
-    supabase.from('scans').select('*').eq('id', params.id).single(),
-    supabase
-      .from('scans')
-      .select('id, url, overall_score, created_at')
-      .order('created_at', { ascending: false })
-      .limit(10),
-  ])
+  useEffect(() => {
+    const id = params.id as string
+    const stored = sessionStorage.getItem(`scan-${id}`)
+    if (!stored) {
+      router.replace('/')
+      return
+    }
+    setScan(JSON.parse(stored))
+  }, [params.id, router])
 
-  if (!scan) notFound()
+  if (!scan) return null
 
   return (
     <main className="min-h-screen bg-rebel-black">
@@ -39,10 +43,7 @@ export default async function ScanPage({ params }: { params: { id: string } }) {
           <ScanForm />
         </div>
       </header>
-      <div className="max-w-4xl mx-auto px-6 py-8 relative">
-        <div className="absolute top-8 right-6 hidden lg:block">
-          <RecentScans scans={recentScans || []} />
-        </div>
+      <div className="max-w-4xl mx-auto px-6 py-8">
         <Link
           href="/"
           className="flex items-center gap-1 text-white/60 hover:text-white text-sm mb-6 w-fit transition-colors"
@@ -52,46 +53,41 @@ export default async function ScanPage({ params }: { params: { id: string } }) {
         <div className="space-y-4 max-w-2xl">
           <ScanResultHeader scan={scan} />
           <RenderingBanner
-            renderingType={scan.rendering_type}
-            rawWordCount={scan.raw_word_count}
-            renderedWordCount={scan.rendered_word_count}
+            renderingType={scan.rendering_type as string}
+            rawWordCount={scan.raw_word_count as number}
+            renderedWordCount={scan.rendered_word_count as number}
           />
           <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
             <PillarCard
               title="FINDABLE"
               subtitle="Can crawlers reach your content?"
-              score={scan.findable_score}
+              score={scan.findable_score as number}
               maxScore={25}
-              checks={scan.checks.findable}
+              checks={(scan.checks as Record<string, unknown[]>).findable}
             />
             <PillarCard
               title="QUOTABLE"
               subtitle="Is your content easy to extract and cite?"
-              score={scan.quotable_score}
+              score={scan.quotable_score as number}
               maxScore={25}
-              checks={scan.checks.quotable}
+              checks={(scan.checks as Record<string, unknown[]>).quotable}
             />
             <PillarCard
               title="UNDERSTANDABLE"
               subtitle="Is the page semantically clear?"
-              score={scan.understandable_score}
+              score={scan.understandable_score as number}
               maxScore={25}
-              checks={scan.checks.understandable}
+              checks={(scan.checks as Record<string, unknown[]>).understandable}
             />
             <PillarCard
               title="TRUSTWORTHY"
               subtitle="Are authority signals present?"
-              score={scan.trustworthy_score}
+              score={scan.trustworthy_score as number}
               maxScore={25}
-              checks={scan.checks.trustworthy}
+              checks={(scan.checks as Record<string, unknown[]>).trustworthy}
             />
           </div>
         </div>
-        {recentScans && recentScans.length > 0 && (
-          <div className="lg:hidden mt-8 max-w-2xl">
-            <RecentScans scans={recentScans} />
-          </div>
-        )}
       </div>
     </main>
   )

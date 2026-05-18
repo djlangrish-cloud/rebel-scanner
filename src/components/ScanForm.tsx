@@ -35,6 +35,7 @@ export default function ScanForm() {
         throw new Error(data.error || 'Scan failed')
       }
 
+      sessionStorage.setItem(`scan-${data.id}`, JSON.stringify(data))
       router.push(`/scan/${data.id}`)
     } catch (err) {
       setError(err instanceof Error ? err.message : 'Something went wrong')

@@ -1,6 +1,6 @@
 import { NextRequest, NextResponse } from 'next/server'
 import * as cheerio from 'cheerio'
-import { supabase } from '@/lib/supabase'
+import { randomUUID } from 'crypto'
 import type { Check, CheckStatus } from '@/lib/types'
 
 function countWords(text: string): number {
@@ -705,35 +705,27 @@ export async function POST(request: NextRequest) {
 
     const overallScore = findable.score + quotable.score + understandable.score + trustworthy.score
 
-    // Save to Supabase
-    const { data: scanRow, error: dbError } = await supabase
-      .from('scans')
-      .insert({
-        url,
-        overall_score: overallScore,
-        findable_score: findable.score,
-        quotable_score: quotable.score,
-        understandable_score: understandable.score,
-        trustworthy_score: trustworthy.score,
-        rendering_type: renderingType,
-        raw_word_count: rawWordCount,
-        rendered_word_count: renderedWordCount,
-        checks: {
-          findable: findable.checks,
-          quotable: quotable.checks,
-          understandable: understandable.checks,
-          trustworthy: trustworthy.checks,
-        },
-      })
-      .select()
-      .single()
-
-    if (dbError) {
-      console.error('Supabase insert error:', dbError)
-      return NextResponse.json({ error: 'Failed to save scan results' }, { status: 500 })
+    const scanResult = {
+      id: randomUUID(),
+      url,
+      overall_score: overallScore,
+      findable_score: findable.score,
+      quotable_score: quotable.score,
+      understandable_score: understandable.score,
+      trustworthy_score: trustworthy.score,
+      rendering_type: renderingType,
+      raw_word_count: rawWordCount,
+      rendered_word_count: renderedWordCount,
+      checks: {
+        findable: findable.checks,
+        quotable: quotable.checks,
+        understandable: understandable.checks,
+        trustworthy: trustworthy.checks,
+      },
+      created_at: new Date().toISOString(),
     }
 
-    return NextResponse.json(scanRow)
+    return NextResponse.json(scanResult)
   } catch (err) {
     console.error('Scan error:', err)
     return NextResponse.json(

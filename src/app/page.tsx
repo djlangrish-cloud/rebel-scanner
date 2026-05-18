@@ -1,17 +1,7 @@
-import { supabase } from '@/lib/supabase'
 import ScanForm from '@/components/ScanForm'
 import EmptyState from '@/components/EmptyState'
-import RecentScans from '@/components/RecentScans'
 
-export const revalidate = 0
-
-export default async function Home() {
-  const { data: recentScans } = await supabase
-    .from('scans')
-    .select('id, url, overall_score, created_at')
-    .order('created_at', { ascending: false })
-    .limit(10)
-
+export default function Home() {
   return (
     <main className="min-h-screen bg-rebel-black">
       <header className="sticky top-0 z-50 bg-rebel-black border-b border-rebel-darkred/20 px-6 py-4">
@@ -30,16 +20,8 @@ export default async function Home() {
           <ScanForm />
         </div>
       </header>
-      <div className="max-w-4xl mx-auto px-6 py-8 relative">
-        <div className="absolute top-8 right-6 hidden lg:block">
-          <RecentScans scans={recentScans || []} />
-        </div>
+      <div className="max-w-4xl mx-auto px-6 py-8">
         <EmptyState />
-        {recentScans && recentScans.length > 0 && (
-          <div className="lg:hidden mt-8">
-            <RecentScans scans={recentScans} />
-          </div>
-        )}
       </div>
     </main>
   )
