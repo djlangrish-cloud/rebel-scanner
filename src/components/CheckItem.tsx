@@ -17,7 +17,7 @@ export default function CheckItem({ check }: CheckItemProps) {
       )}
       {check.fix && (
         <div className="rounded-lg bg-white/5 p-3 mt-2">
-          <span className="text-collab-green font-bold text-xs uppercase tracking-wide">FIX: </span>
+          <span className="text-rebel-red font-bold text-xs uppercase tracking-wide">FIX: </span>
           <span className="text-white/70 text-sm">{check.fix}</span>
         </div>
       )}

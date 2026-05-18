@@ -6,28 +6,28 @@ interface RenderingBannerProps {
 
 const TYPE_CONFIG = {
   SSR: {
-    badgeClass: 'bg-green-950 text-collab-green border border-collab-green/30',
+    badgeClass: 'bg-red-950 text-rebel-red border border-rebel-red/30',
     label: 'SSR',
     heading: 'AI CRAWLERS CAN READ YOUR CONTENT',
     body:
       'Your page is server-rendered — HTML is sent fully formed to the browser. This means AI crawlers like GPTBot and ClaudeBot can read your content directly without executing JavaScript.',
   },
   CSR: {
-    badgeClass: 'bg-red-950 text-red-400 border border-red-400/30',
+    badgeClass: 'bg-orange-950 text-orange-400 border border-orange-400/30',
     label: 'CSR',
     heading: 'MOST AI CRAWLERS CAN\'T READ YOUR CONTENT',
     body:
       'Your page relies heavily on client-side JavaScript to render content. Most AI web crawlers do not execute JavaScript, meaning they may see a near-empty page. Consider server-side rendering or static generation for key content.',
   },
   Hybrid: {
-    badgeClass: 'bg-yellow-950 text-collab-yellow border border-collab-yellow/30',
+    badgeClass: 'bg-yellow-950 text-rebel-yellow border border-rebel-yellow/30',
     label: 'HYBRID',
     heading: 'SOME CONTENT REQUIRES JAVASCRIPT',
     body:
       'Your page appears to mix server-rendered and client-rendered content. Core content is accessible to crawlers, but some sections may be missed by AI crawlers that do not run JavaScript.',
   },
   Estimated: {
-    badgeClass: 'bg-yellow-950 text-collab-yellow border border-collab-yellow/30',
+    badgeClass: 'bg-yellow-950 text-rebel-yellow border border-rebel-yellow/30',
     label: 'ESTIMATED',
     heading: 'RENDERING UNKNOWN — LIKELY SERVER-RENDERED',
     body:
@@ -43,7 +43,7 @@ export default function RenderingBanner({
   const config = TYPE_CONFIG[renderingType]
 
   return (
-    <div className="bg-[#0a1a19] border border-[rgba(13,99,97,0.3)] rounded-[14px] p-6">
+    <div className="bg-[#160c0c] border border-[rgba(192,57,43,0.3)] rounded-[14px] p-6">
       <div className="flex items-start gap-4">
         <div className="flex-1">
           <span

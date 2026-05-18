@@ -17,7 +17,7 @@ export default function PillarCard({ title, subtitle, score, maxScore, checks }:
   const [expanded, setExpanded] = useState(false)
 
   return (
-    <div className="bg-[#0a1a19] border border-[rgba(13,99,97,0.3)] rounded-[14px] p-6">
+    <div className="bg-[#160c0c] border border-[rgba(192,57,43,0.3)] rounded-[14px] p-6">
       <button
         onClick={() => setExpanded((v) => !v)}
         className="w-full text-left"

@@ -22,18 +22,18 @@ export default async function ScanPage({ params }: { params: { id: string } }) {
   if (!scan) notFound()
 
   return (
-    <main className="min-h-screen bg-black">
-      <header className="sticky top-0 z-50 bg-black border-b border-collab-teal/20 px-6 py-4">
+    <main className="min-h-screen bg-rebel-black">
+      <header className="sticky top-0 z-50 bg-rebel-black border-b border-rebel-darkred/20 px-6 py-4">
         <div className="max-w-4xl mx-auto flex items-center gap-4">
           <div className="flex items-center gap-2 shrink-0">
             <span
               className="font-bold text-white text-xl uppercase"
               style={{ fontFamily: "'Space Grotesk', sans-serif" }}
             >
-              COLLAB
+              REBEL
             </span>
-            <span className="text-collab-green text-xs font-semibold tracking-widest uppercase">
-              SCANNER
+            <span className="text-rebel-red text-xs font-semibold tracking-widest uppercase">
+              AI SCANNER
             </span>
           </div>
           <ScanForm />

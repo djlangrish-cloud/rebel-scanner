@@ -9,11 +9,11 @@ const config: Config = {
   theme: {
     extend: {
       colors: {
-        'collab-black': '#000000',
-        'collab-green': '#30EECB',
-        'collab-teal': '#0d6361',
-        'collab-yellow': '#EAEE72',
-        'collab-white': '#FFFFFF',
+        'rebel-black': '#0c0c0c',
+        'rebel-red': '#e74c3c',
+        'rebel-darkred': '#c0392b',
+        'rebel-yellow': '#EAEE72',
+        'rebel-white': '#FFFFFF',
       },
       fontFamily: {
         'space-grotesk': ['Space Grotesk', 'sans-serif'],

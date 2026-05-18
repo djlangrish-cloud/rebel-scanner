@@ -57,13 +57,13 @@ export default function ScanForm() {
             onChange={(e) => setUrl(e.target.value)}
             placeholder="https://yourwebsite.com"
             disabled={loading}
-            className="w-full bg-[#111] border border-[rgba(13,99,97,0.3)] rounded-full pl-10 pr-4 py-2.5 text-white text-sm placeholder-white/20 focus:outline-none focus:border-collab-green/50 transition-colors disabled:opacity-50"
+            className="w-full bg-[#161616] border border-[rgba(192,57,43,0.3)] rounded-full pl-10 pr-4 py-2.5 text-white text-sm placeholder-white/20 focus:outline-none focus:border-rebel-red/50 transition-colors disabled:opacity-50"
           />
         </div>
         <button
           type="submit"
           disabled={loading || !url.trim()}
-          className="bg-collab-green text-black font-bold rounded-full px-5 py-2.5 text-sm hover:bg-collab-green/90 transition-colors disabled:opacity-50 shrink-0 uppercase tracking-wide"
+          className="bg-rebel-red text-white font-bold rounded-full px-5 py-2.5 text-sm hover:bg-rebel-red/90 transition-colors disabled:opacity-50 shrink-0 uppercase tracking-wide"
           style={{ fontFamily: "'Space Grotesk', sans-serif" }}
         >
           {loading ? (

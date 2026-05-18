@@ -5,9 +5,9 @@ interface StatusPillProps {
 }
 
 const STYLES: Record<CheckStatus, string> = {
-  good: 'bg-green-950 text-collab-green border border-collab-green/30',
-  needs_work: 'bg-yellow-950 text-collab-yellow border border-collab-yellow/30',
-  critical: 'bg-red-950 text-red-400 border border-red-400/30',
+  good: 'bg-red-950 text-rebel-red border border-rebel-red/30',
+  needs_work: 'bg-yellow-950 text-rebel-yellow border border-rebel-yellow/30',
+  critical: 'bg-orange-950 text-orange-400 border border-orange-400/30',
 }
 
 const LABELS: Record<CheckStatus, string> = {

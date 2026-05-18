@@ -42,7 +42,7 @@ export default function EqualizerViz({ score, maxScore, size }: EqualizerVizProp
             height: h,
             marginRight: i < barCount - 1 ? gap : 0,
             borderRadius: '999px',
-            backgroundColor: i < activeCount ? '#30EECB' : 'rgba(13,99,97,0.35)',
+            backgroundColor: i < activeCount ? '#e74c3c' : 'rgba(192,57,43,0.35)',
             transition: 'background-color 0.3s ease',
             flexShrink: 0,
           }}
