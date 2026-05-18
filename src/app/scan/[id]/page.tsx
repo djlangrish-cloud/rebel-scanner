@@ -7,11 +7,12 @@ import ScanResultHeader from '@/components/ScanResultHeader'
 import RenderingBanner from '@/components/RenderingBanner'
 import PillarCard from '@/components/PillarCard'
 import Link from 'next/link'
+import type { ScanResult } from '@/lib/types'
 
 export default function ScanPage() {
   const params = useParams()
   const router = useRouter()
-  const [scan, setScan] = useState<Record<string, unknown> | null>(null)
+  const [scan, setScan] = useState<ScanResult | null>(null)
 
   useEffect(() => {
     const id = params.id as string
@@ -53,38 +54,38 @@ export default function ScanPage() {
         <div className="space-y-4 max-w-2xl">
           <ScanResultHeader scan={scan} />
           <RenderingBanner
-            renderingType={scan.rendering_type as string}
-            rawWordCount={scan.raw_word_count as number}
-            renderedWordCount={scan.rendered_word_count as number}
+            renderingType={scan.rendering_type}
+            rawWordCount={scan.raw_word_count}
+            renderedWordCount={scan.rendered_word_count}
           />
           <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
             <PillarCard
               title="FINDABLE"
               subtitle="Can crawlers reach your content?"
-              score={scan.findable_score as number}
+              score={scan.findable_score}
               maxScore={25}
-              checks={(scan.checks as Record<string, unknown[]>).findable}
+              checks={scan.checks.findable}
             />
             <PillarCard
               title="QUOTABLE"
               subtitle="Is your content easy to extract and cite?"
-              score={scan.quotable_score as number}
+              score={scan.quotable_score}
               maxScore={25}
-              checks={(scan.checks as Record<string, unknown[]>).quotable}
+              checks={scan.checks.quotable}
             />
             <PillarCard
               title="UNDERSTANDABLE"
               subtitle="Is the page semantically clear?"
-              score={scan.understandable_score as number}
+              score={scan.understandable_score}
               maxScore={25}
-              checks={(scan.checks as Record<string, unknown[]>).understandable}
+              checks={scan.checks.understandable}
             />
             <PillarCard
               title="TRUSTWORTHY"
               subtitle="Are authority signals present?"
-              score={scan.trustworthy_score as number}
+              score={scan.trustworthy_score}
               maxScore={25}
-              checks={(scan.checks as Record<string, unknown[]>).trustworthy}
+              checks={scan.checks.trustworthy}
             />
           </div>
         </div>
