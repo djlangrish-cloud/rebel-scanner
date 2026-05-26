@@ -17,13 +17,13 @@ export default function ThankYou() {
           className="text-white font-bold text-3xl uppercase mb-4"
           style={{ fontFamily: "'Space Grotesk', sans-serif" }}
         >
-          Thanks — I&apos;ll be in touch.
+          Thanks. I&apos;ll be in touch.
         </h1>
         <p className="text-white/70 text-base leading-relaxed mb-8">
           I&apos;ve got your results and contact details. I&apos;ll review everything and come back to you within 24 hours.
         </p>
         <p className="text-white/50 text-sm mb-10">
-          — Dan Langrish, Rebel Marketer
+          Dan Langrish, Rebel Marketer
         </p>
 
         <Link
