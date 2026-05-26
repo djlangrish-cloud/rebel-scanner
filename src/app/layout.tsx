@@ -2,8 +2,11 @@ import type { Metadata } from 'next'
 import './globals.css'
 
 export const metadata: Metadata = {
-  title: 'Rebel AI Scanner',
-  description: 'Analyse any website for AI search visibility. Get scored on Findability, Quotability, Understandability, and Trustworthiness.',
+  title: {
+    default: 'Rebel AI Scanner',
+    template: '%s — Rebel AI Scanner',
+  },
+  description: 'Free AI search readiness audit. Find out how AI search engines read your website.',
   icons: {
     icon: 'https://rebelmarketer.co.uk/wp-content/uploads/2025/09/R.png',
     apple: 'https://rebelmarketer.co.uk/wp-content/uploads/2025/09/R.png',
