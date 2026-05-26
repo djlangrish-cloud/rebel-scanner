@@ -2,10 +2,7 @@ import { NextRequest, NextResponse } from 'next/server'
 import { Resend } from 'resend'
 import type { ScanResult } from '@/lib/types'
 
-const resend = new Resend(process.env.RESEND_API_KEY)
-
 const TO_EMAIL = 'djlangrish@gmail.com'
-const FROM_EMAIL = process.env.FROM_EMAIL || 'Rebel Scanner <onboarding@resend.dev>'
 
 function getDomain(url: string): string {
   try { return new URL(url).hostname.replace(/^www\./, '') } catch { return url }
@@ -112,6 +109,9 @@ export async function POST(request: NextRequest) {
       <p style="color:#e0e0e0;font-size:15px;line-height:1.6;margin-top:16px;">— Dan Langrish<br><span style="color:#aaa;font-size:13px;">Technical SEO Specialist, Rebel Marketer</span></p>
     </div>
   `
+
+  const resend = new Resend(process.env.RESEND_API_KEY)
+  const FROM_EMAIL = process.env.FROM_EMAIL || 'Rebel Scanner <onboarding@resend.dev>'
 
   try {
     await Promise.all([
