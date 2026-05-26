@@ -29,14 +29,25 @@ export default function QuoteModal({ scan, onClose }: QuoteModalProps) {
     setError(null)
     setLoading(true)
     try {
-      const res = await fetch('/api/quote', {
+      const res = await fetch('https://api.web3forms.com/submit', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ name, email, phone, scan }),
+        body: JSON.stringify({
+          access_key: 'bbcf6a05-1375-403a-ba94-24b53925f537',
+          subject: `New quote request: ${scan.url} — ${scan.overall_score}/100`,
+          name: name || 'Not provided',
+          email,
+          phone,
+          url_scanned: scan.url,
+          overall_score: `${scan.overall_score}/100`,
+          findable: `${scan.findable_score}/25`,
+          quotable: `${scan.quotable_score}/25`,
+          understandable: `${scan.understandable_score}/25`,
+          trustworthy: `${scan.trustworthy_score}/25`,
+        }),
       })
-      let data: { error?: string } = {}
-      try { data = await res.json() } catch { /* empty body */ }
-      if (!res.ok) throw new Error(data.error || `Server error (${res.status})`)
+      const data = await res.json()
+      if (!data.success) throw new Error(data.message || 'Submission failed')
       router.push('/thank-you')
     } catch (err) {
       setError(err instanceof Error ? err.message : 'Something went wrong')
