@@ -128,32 +128,15 @@ export async function POST(request: NextRequest) {
     </div>
   `
 
-  // Confirmation email to prospect
-  const prospectEmailHtml = `
-    <div style="font-family:Inter,Arial,sans-serif;background:#0c0c0c;padding:32px;max-width:600px;margin:0 auto;border-radius:12px;">
-      <p style="color:#e74c3c;font-size:11px;font-weight:700;letter-spacing:2px;text-transform:uppercase;margin:0 0 8px;">REBEL MARKETER</p>
-      <h1 style="color:#fff;font-size:22px;margin:0 0 20px;font-family:'Space Grotesk',sans-serif;">Thanks — I'll be in touch shortly.</h1>
-      <p style="color:#e0e0e0;font-size:15px;line-height:1.6;">I've received your AI Scanner results for <strong style="color:#fff;">${domain}</strong> (score: <strong style="color:#e74c3c;">${scan.overall_score}/100</strong>) and I'll review them and come back to you within 24 hours.</p>
-      <p style="color:#e0e0e0;font-size:15px;line-height:1.6;margin-top:16px;">— Dan Langrish<br><span style="color:#aaa;font-size:13px;">Technical SEO Specialist, Rebel Marketer</span></p>
-    </div>
-  `
 
   try {
-    await Promise.all([
-      sendEmail(apiKey, {
-        from: FROM_EMAIL,
-        to: TO_EMAIL,
-        subject: `New quote request: ${domain} — ${scan.overall_score}/100`,
-        html: danEmailHtml,
-        reply_to: email,
-      }),
-      sendEmail(apiKey, {
-        from: FROM_EMAIL,
-        to: email,
-        subject: `Your AI Scanner results for ${domain}`,
-        html: prospectEmailHtml,
-      }),
-    ])
+    await sendEmail(apiKey, {
+      from: FROM_EMAIL,
+      to: TO_EMAIL,
+      subject: `New quote request: ${domain} — ${scan.overall_score}/100`,
+      html: danEmailHtml,
+      reply_to: email,
+    })
 
     return NextResponse.json({ success: true })
   } catch (err) {
