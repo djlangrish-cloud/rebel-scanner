@@ -10,7 +10,7 @@ export default function EmptyState() {
       >
         PASTE A URL TO BEGIN
       </h2>
-      <p className="text-white/40 text-base mt-3 max-w-md leading-relaxed">
+      <p className="text-white/70 text-base mt-3 max-w-md leading-relaxed">
         Analyse any website for AI search visibility. Get scored on Findability, Quotability,
         Understandability, and Trustworthiness.
       </p>

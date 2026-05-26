@@ -57,20 +57,20 @@ export default function RenderingBanner({
           >
             {config.heading}
           </h3>
-          <p className="text-white/50 text-sm leading-relaxed">{config.body}</p>
+          <p className="text-white/75 text-sm leading-relaxed">{config.body}</p>
         </div>
       </div>
 
       <div className="grid grid-cols-2 gap-4 mt-5 pt-5 border-t border-white/10">
         <div>
-          <p className="text-white/40 text-xs uppercase tracking-widest mb-1">Raw HTML</p>
+          <p className="text-white/60 text-xs uppercase tracking-widest mb-1">Raw HTML</p>
           <p className="text-white font-bold text-2xl">{rawWordCount.toLocaleString()}</p>
-          <p className="text-white/40 text-xs mt-0.5">words</p>
+          <p className="text-white/60 text-xs mt-0.5">words</p>
         </div>
         <div>
-          <p className="text-white/40 text-xs uppercase tracking-widest mb-1">JS-rendered</p>
+          <p className="text-white/60 text-xs uppercase tracking-widest mb-1">JS-rendered</p>
           <p className="text-white font-bold text-2xl">{renderedWordCount.toLocaleString()}</p>
-          <p className="text-white/40 text-xs mt-0.5">words</p>
+          <p className="text-white/60 text-xs mt-0.5">words</p>
         </div>
       </div>
     </div>
