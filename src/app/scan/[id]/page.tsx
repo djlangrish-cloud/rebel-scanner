@@ -7,6 +7,7 @@ import ScanResultHeader from '@/components/ScanResultHeader'
 import RenderingBanner from '@/components/RenderingBanner'
 import PillarCard from '@/components/PillarCard'
 import QuoteModal from '@/components/QuoteModal'
+import Footer from '@/components/Footer'
 import Link from 'next/link'
 import type { ScanResult } from '@/lib/types'
 
@@ -92,6 +93,8 @@ export default function ScanPage() {
           </div>
         </div>
       </div>
+
+      <Footer />
 
       {showQuote && (
         <QuoteModal scan={scan} onClose={() => setShowQuote(false)} />

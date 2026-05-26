@@ -1,6 +1,7 @@
 import Link from 'next/link'
 import ScanForm from '@/components/ScanForm'
 import EmptyState from '@/components/EmptyState'
+import Footer from '@/components/Footer'
 
 export default function Home() {
   return (
@@ -24,6 +25,7 @@ export default function Home() {
       <div className="max-w-4xl mx-auto px-6 py-8">
         <EmptyState />
       </div>
+      <Footer />
     </main>
   )
 }
