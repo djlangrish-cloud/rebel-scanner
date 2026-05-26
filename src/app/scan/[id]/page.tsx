@@ -6,6 +6,7 @@ import ScanForm from '@/components/ScanForm'
 import ScanResultHeader from '@/components/ScanResultHeader'
 import RenderingBanner from '@/components/RenderingBanner'
 import PillarCard from '@/components/PillarCard'
+import QuoteModal from '@/components/QuoteModal'
 import Link from 'next/link'
 import type { ScanResult } from '@/lib/types'
 
@@ -13,6 +14,7 @@ export default function ScanPage() {
   const params = useParams()
   const router = useRouter()
   const [scan, setScan] = useState<ScanResult | null>(null)
+  const [showQuote, setShowQuote] = useState(false)
 
   useEffect(() => {
     const id = params.id as string
@@ -52,7 +54,7 @@ export default function ScanPage() {
           ← NEW SCAN
         </Link>
         <div className="space-y-4 max-w-2xl">
-          <ScanResultHeader scan={scan} />
+          <ScanResultHeader scan={scan} onGetQuote={() => setShowQuote(true)} />
           <RenderingBanner
             renderingType={scan.rendering_type}
             rawWordCount={scan.raw_word_count}
@@ -90,6 +92,10 @@ export default function ScanPage() {
           </div>
         </div>
       </div>
+
+      {showQuote && (
+        <QuoteModal scan={scan} onClose={() => setShowQuote(false)} />
+      )}
     </main>
   )
 }

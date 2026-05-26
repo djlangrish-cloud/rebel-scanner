@@ -31,12 +31,12 @@ export default function PillarCard({ title, subtitle, score, maxScore, checks }:
             >
               {title}
             </h3>
-            <p className="text-white/50 text-sm mt-1 leading-snug">{subtitle}</p>
+            <p className="text-white/75 text-sm mt-1 leading-snug">{subtitle}</p>
           </div>
           <div className="flex items-center gap-3 shrink-0">
             <div className="text-right">
               <span className="text-white font-bold text-2xl">{score}</span>
-              <span className="text-white/40 text-sm">/{maxScore}</span>
+              <span className="text-white/60 text-sm">/{maxScore}</span>
             </div>
             <EqualizerViz score={score} maxScore={maxScore} size="md" />
             <svg

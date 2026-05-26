@@ -13,12 +13,12 @@ export default function CheckItem({ check }: CheckItemProps) {
         <StatusPill status={check.status} />
       </div>
       {check.detail && (
-        <p className="text-white/50 text-sm mt-1 leading-snug">{check.detail}</p>
+        <p className="text-white/75 text-sm mt-1 leading-snug">{check.detail}</p>
       )}
       {check.fix && (
         <div className="rounded-lg bg-white/5 p-3 mt-2">
           <span className="text-rebel-red font-bold text-xs uppercase tracking-wide">FIX: </span>
-          <span className="text-white/70 text-sm">{check.fix}</span>
+          <span className="text-white/85 text-sm">{check.fix}</span>
         </div>
       )}
     </div>
