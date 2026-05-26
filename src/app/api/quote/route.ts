@@ -47,11 +47,12 @@ function buildScanSummaryHtml(scan: ScanResult): string {
 }
 
 export async function POST(request: NextRequest) {
+  try {
   let body: { name?: string; email?: string; phone?: string; scan?: ScanResult }
   try {
     body = await request.json()
   } catch {
-    return NextResponse.json({ error: 'Invalid JSON' }, { status: 400 })
+    return NextResponse.json({ error: 'Invalid JSON body' }, { status: 400 })
   }
 
   const { name, email, phone, scan } = body
@@ -140,6 +141,11 @@ export async function POST(request: NextRequest) {
     return NextResponse.json({ success: true })
   } catch (err) {
     console.error('Email send error:', err)
-    return NextResponse.json({ error: 'Failed to send email' }, { status: 500 })
+    return NextResponse.json({ error: 'Failed to send email', detail: String(err) }, { status: 500 })
+  }
+
+  } catch (err) {
+    console.error('Unhandled route error:', err)
+    return NextResponse.json({ error: 'Unexpected error', detail: String(err) }, { status: 500 })
   }
 }
