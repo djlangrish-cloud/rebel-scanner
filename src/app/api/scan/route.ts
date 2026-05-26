@@ -58,8 +58,9 @@ async function fetchRenderedHtml(url: string): Promise<string | null> {
 }
 
 function extractBodyText($: cheerio.CheerioAPI): string {
-  $('script, style, noscript, head').remove()
-  return $('body').text().replace(/\s+/g, ' ').trim()
+  const bodyClone = $('body').clone()
+  bodyClone.find('script, style, noscript').remove()
+  return bodyClone.text().replace(/\s+/g, ' ').trim()
 }
 
 // ─── FINDABLE ────────────────────────────────────────────────────────────────
@@ -383,11 +384,10 @@ function scoreUnderstandable($: cheerio.CheerioAPI): { score: number; checks: Ch
     )
   }
 
-  // 2. Meta description
-  const metaDesc =
-    $('meta[name="description"]').attr('content') ||
-    $('meta[name="Description"]').attr('content') ||
-    ''
+  // 2. Meta description — find first non-empty (WordPress often adds a blank one first)
+  const metaDescEl = $('meta[name="description"], meta[name="Description"]').toArray()
+    .find(el => ($( el).attr('content') || '').trim().length > 0)
+  const metaDesc = metaDescEl ? ($(metaDescEl).attr('content') || '') : ''
   if (!metaDesc) {
     checks.push(
       makeCheck(
