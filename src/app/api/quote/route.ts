@@ -59,6 +59,12 @@ export async function POST(request: NextRequest) {
     return NextResponse.json({ error: 'Email, phone and scan are required' }, { status: 400 })
   }
 
+  if (!process.env.RESEND_API_KEY) {
+    return NextResponse.json({ error: 'Email service not configured' }, { status: 500 })
+  }
+
+  const resend = new Resend(process.env.RESEND_API_KEY)
+  const FROM_EMAIL = process.env.FROM_EMAIL || 'Rebel Scanner <onboarding@resend.dev>'
   const domain = getDomain(scan.url)
 
   // Email to Dan
@@ -109,9 +115,6 @@ export async function POST(request: NextRequest) {
       <p style="color:#e0e0e0;font-size:15px;line-height:1.6;margin-top:16px;">— Dan Langrish<br><span style="color:#aaa;font-size:13px;">Technical SEO Specialist, Rebel Marketer</span></p>
     </div>
   `
-
-  const resend = new Resend(process.env.RESEND_API_KEY)
-  const FROM_EMAIL = process.env.FROM_EMAIL || 'Rebel Scanner <onboarding@resend.dev>'
 
   try {
     await Promise.all([

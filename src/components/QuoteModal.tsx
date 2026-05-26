@@ -34,8 +34,9 @@ export default function QuoteModal({ scan, onClose }: QuoteModalProps) {
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({ name, email, phone, scan }),
       })
-      const data = await res.json()
-      if (!res.ok) throw new Error(data.error || 'Something went wrong')
+      let data: { error?: string } = {}
+      try { data = await res.json() } catch { /* empty body */ }
+      if (!res.ok) throw new Error(data.error || `Server error (${res.status})`)
       router.push('/thank-you')
     } catch (err) {
       setError(err instanceof Error ? err.message : 'Something went wrong')
