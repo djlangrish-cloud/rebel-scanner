@@ -3,7 +3,11 @@
 import { useState, FormEvent } from 'react'
 import { useRouter } from 'next/navigation'
 
-export default function ScanForm() {
+interface ScanFormProps {
+  hero?: boolean
+}
+
+export default function ScanForm({ hero = false }: ScanFormProps) {
   const router = useRouter()
   const [url, setUrl] = useState('')
   const [loading, setLoading] = useState(false)
@@ -41,6 +45,44 @@ export default function ScanForm() {
       setError(err instanceof Error ? err.message : 'Something went wrong')
       setLoading(false)
     }
+  }
+
+  if (hero) {
+    return (
+      <div className="w-full">
+        <form onSubmit={handleSubmit} className="flex items-stretch gap-3">
+          <input
+            type="text"
+            value={url}
+            onChange={(e) => setUrl(e.target.value)}
+            placeholder="scanyoursite.com"
+            disabled={loading}
+            className="flex-1 bg-white text-gray-900 rounded-xl px-5 py-4 text-base placeholder-gray-400 focus:outline-none focus:ring-2 focus:ring-rebel-red transition disabled:opacity-50"
+          />
+          <button
+            type="submit"
+            disabled={loading || !url.trim()}
+            className="bg-rebel-red text-white font-bold rounded-xl px-7 py-4 text-sm hover:bg-rebel-red/90 transition-colors disabled:opacity-50 shrink-0 uppercase tracking-wide"
+            style={{ fontFamily: "'Space Grotesk', sans-serif" }}
+          >
+            {loading ? (
+              <span className="flex items-center gap-2">
+                <svg className="w-4 h-4 animate-spin" viewBox="0 0 24 24" fill="none">
+                  <circle className="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" strokeWidth="4" />
+                  <path className="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8v4l3-3-3-3v4a8 8 0 00-8 8h4l-3 3-3-3h4z" />
+                </svg>
+                SCANNING...
+              </span>
+            ) : (
+              'SCAN'
+            )}
+          </button>
+        </form>
+        {error && (
+          <p className="text-red-400 text-sm mt-3">{error}</p>
+        )}
+      </div>
+    )
   }
 
   return (
