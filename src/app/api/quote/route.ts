@@ -60,7 +60,11 @@ export async function POST(request: NextRequest) {
   }
 
   if (!process.env.RESEND_API_KEY) {
-    return NextResponse.json({ error: 'Email service not configured' }, { status: 500 })
+    const resendVars = Object.keys(process.env).filter(k => k.includes('RESEND'))
+    return NextResponse.json({
+      error: 'Email service not configured',
+      debug: `RESEND vars visible: [${resendVars.join(', ') || 'none'}]`
+    }, { status: 500 })
   }
 
   const resend = new Resend(process.env.RESEND_API_KEY)
