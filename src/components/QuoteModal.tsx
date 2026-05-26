@@ -24,6 +24,33 @@ export default function QuoteModal({ scan, onClose }: QuoteModalProps) {
     return () => document.removeEventListener('keydown', handler)
   }, [onClose])
 
+  const buildReportText = () => {
+    const sections = [
+      { title: 'FINDABLE', score: scan.findable_score, checks: scan.checks.findable },
+      { title: 'QUOTABLE', score: scan.quotable_score, checks: scan.checks.quotable },
+      { title: 'UNDERSTANDABLE', score: scan.understandable_score, checks: scan.checks.understandable },
+      { title: 'TRUSTWORTHY', score: scan.trustworthy_score, checks: scan.checks.trustworthy },
+    ]
+    const lines: string[] = [
+      `REBEL AI SCANNER — FULL REPORT`,
+      `URL: ${scan.url}`,
+      `Overall Score: ${scan.overall_score}/100`,
+      `Scanned: ${new Date(scan.created_at).toLocaleString('en-GB')}`,
+      '',
+    ]
+    for (const section of sections) {
+      lines.push(`── ${section.title} (${section.score}/25) ──`)
+      for (const check of section.checks) {
+        const statusTag = check.status === 'good' ? '[GOOD]' : check.status === 'critical' ? '[CRITICAL]' : '[NEEDS WORK]'
+        lines.push(`${statusTag} ${check.name}`)
+        lines.push(`  ${check.detail}`)
+        if (check.fix) lines.push(`  FIX: ${check.fix}`)
+      }
+      lines.push('')
+    }
+    return lines.join('\n')
+  }
+
   const handleSubmit = async (e: FormEvent) => {
     e.preventDefault()
     setError(null)
@@ -44,6 +71,7 @@ export default function QuoteModal({ scan, onClose }: QuoteModalProps) {
           quotable: `${scan.quotable_score}/25`,
           understandable: `${scan.understandable_score}/25`,
           trustworthy: `${scan.trustworthy_score}/25`,
+          message: buildReportText(),
         }),
       })
       const data = await res.json()

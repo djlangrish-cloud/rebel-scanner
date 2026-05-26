@@ -1,5 +1,6 @@
 'use client'
 
+import { useState } from 'react'
 import type { ScanResult } from '@/lib/types'
 import EqualizerViz from './EqualizerViz'
 
@@ -33,6 +34,18 @@ function getDomain(url: string): string {
 }
 
 export default function ScanResultHeader({ scan, onGetQuote }: ScanResultHeaderProps) {
+  const [pdfLoading, setPdfLoading] = useState(false)
+
+  const handleDownloadPDF = async () => {
+    setPdfLoading(true)
+    try {
+      const { generatePDF } = await import('@/lib/generatePDF')
+      await generatePDF(scan)
+    } finally {
+      setPdfLoading(false)
+    }
+  }
+
   const handleExport = () => {
     const blob = new Blob([JSON.stringify(scan, null, 2)], { type: 'application/json' })
     const url = URL.createObjectURL(blob)
@@ -69,6 +82,16 @@ export default function ScanResultHeader({ scan, onGetQuote }: ScanResultHeaderP
                 <path strokeLinecap="round" strokeLinejoin="round" d="M3 8l7.89 5.26a2 2 0 002.22 0L21 8M5 19h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v10a2 2 0 002 2z" />
               </svg>
               GET A QUOTE
+            </button>
+            <button
+              onClick={handleDownloadPDF}
+              disabled={pdfLoading}
+              className="flex items-center gap-1.5 text-xs text-white/70 hover:text-rebel-red transition-colors border border-white/10 hover:border-rebel-red/30 rounded-full px-3 py-1.5 disabled:opacity-50"
+            >
+              <svg className="w-3.5 h-3.5" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2}>
+                <path strokeLinecap="round" strokeLinejoin="round" d="M9 12h6m-6 4h6m2 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z" />
+              </svg>
+              {pdfLoading ? 'GENERATING...' : 'DOWNLOAD PDF'}
             </button>
             <button
               onClick={handleExport}
