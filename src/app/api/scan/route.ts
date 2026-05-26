@@ -63,7 +63,7 @@ function extractBodyText($: cheerio.CheerioAPI): string {
   return bodyClone.text().replace(/\s+/g, ' ').trim()
 }
 
-// ─── FINDABLE ────────────────────────────────────────────────────────────────
+// ── FINDABLE ─────────────────────────────────────────────────────────────────
 
 async function scoreFindable(url: string, $: cheerio.CheerioAPI): Promise<{ score: number; checks: Check[] }> {
   const checks: Check[] = []
@@ -72,9 +72,9 @@ async function scoreFindable(url: string, $: cheerio.CheerioAPI): Promise<{ scor
   // 1. HTTPS
   if (url.startsWith('https://')) {
     score += 5
-    checks.push(makeCheck('HTTPS', 'good', 'Your site is served over HTTPS — secure and trustworthy for crawlers.'))
+    checks.push(makeCheck('HTTPS', 'good', 'Served over HTTPS. Secure and crawlable.'))
   } else {
-    checks.push(makeCheck('HTTPS', 'critical', 'Your site is not using HTTPS.', 'Redirect all traffic to HTTPS and obtain an SSL certificate.'))
+    checks.push(makeCheck('HTTPS', 'critical', 'Not using HTTPS.', 'Redirect all traffic to HTTPS and get an SSL certificate.'))
   }
 
   // 2. robots.txt
@@ -97,8 +97,8 @@ async function scoreFindable(url: string, $: cheerio.CheerioAPI): Promise<{ scor
           makeCheck(
             'robots.txt',
             'needs_work',
-            `robots.txt is blocking these AI crawlers: ${blocked.join(', ')}.`,
-            `Remove or update the Disallow rules for: ${blocked.join(', ')} to allow AI search engines to index your content.`
+            `robots.txt is blocking these crawlers: ${blocked.join(', ')}.`,
+            `Remove the Disallow rules for: ${blocked.join(', ')}. Blocking them cuts you off from AI search visibility.`
           )
         )
       }
@@ -120,7 +120,7 @@ async function scoreFindable(url: string, $: cheerio.CheerioAPI): Promise<{ scor
         'robots.txt',
         'needs_work',
         'Could not fetch robots.txt.',
-        'Ensure /robots.txt is accessible and properly configured.'
+        'Make sure /robots.txt is accessible and properly configured.'
       )
     )
   }
@@ -130,14 +130,14 @@ async function scoreFindable(url: string, $: cheerio.CheerioAPI): Promise<{ scor
     const sitemapRes = await fetch(`${origin}/sitemap.xml`, { signal: AbortSignal.timeout(5000) })
     if (sitemapRes.ok) {
       score += 5
-      checks.push(makeCheck('sitemap.xml', 'good', 'sitemap.xml found — helps crawlers discover all your pages.'))
+      checks.push(makeCheck('sitemap.xml', 'good', 'sitemap.xml found. Crawlers can discover all your pages.'))
     } else {
       checks.push(
         makeCheck(
           'sitemap.xml',
           'needs_work',
           'No sitemap.xml found.',
-          'Generate an XML sitemap and submit it to Google Search Console. Most CMS platforms have plugins for this.'
+          'Generate an XML sitemap and submit it to Google Search Console. Most CMS platforms have a plugin for this.'
         )
       )
     }
@@ -147,7 +147,7 @@ async function scoreFindable(url: string, $: cheerio.CheerioAPI): Promise<{ scor
         'sitemap.xml',
         'needs_work',
         'Could not check for sitemap.xml.',
-        'Ensure /sitemap.xml is publicly accessible.'
+        'Make sure /sitemap.xml is publicly accessible.'
       )
     )
   }
@@ -176,23 +176,23 @@ async function scoreFindable(url: string, $: cheerio.CheerioAPI): Promise<{ scor
         makeCheck(
           'Meta robots',
           'critical',
-          `Meta robots tag contains "noindex" — this page will not be indexed by search engines.`,
-          'Remove the "noindex" directive from the meta robots tag unless you intentionally want this page hidden from search engines.'
+          `Meta robots contains "noindex". This page will not be indexed.`,
+          'Remove "noindex" from the meta robots tag. Right now this page is invisible to search engines.'
         )
       )
     } else {
       score += 5
-      checks.push(makeCheck('Meta robots', 'good', `Meta robots is set to: "${metaRobots}" — indexing is allowed.`))
+      checks.push(makeCheck('Meta robots', 'good', `Meta robots is "${metaRobots}". Indexing is allowed.`))
     }
   } else {
     score += 5
-    checks.push(makeCheck('Meta robots', 'good', 'No meta robots tag — page is indexable by default.'))
+    checks.push(makeCheck('Meta robots', 'good', 'No meta robots tag. Page is indexable by default.'))
   }
 
   return { score: Math.min(score, 25), checks }
 }
 
-// ─── QUOTABLE ────────────────────────────────────────────────────────────────
+// ── QUOTABLE ──────────────────────────────────────────────────────────────────
 
 function scoreQuotable($: cheerio.CheerioAPI): { score: number; checks: Check[] } {
   const checks: Check[] = []
@@ -203,15 +203,15 @@ function scoreQuotable($: cheerio.CheerioAPI): { score: number; checks: Check[] 
   const wordCount = countWords(bodyText)
   if (wordCount >= 300) {
     score += 5
-    checks.push(makeCheck('Word count', 'good', `${wordCount.toLocaleString()} words — enough content for AI to quote from.`))
+    checks.push(makeCheck('Word count', 'good', `${wordCount.toLocaleString()} words. Plenty for crawlers to work with.`))
   } else if (wordCount >= 150) {
     score += 3
     checks.push(
       makeCheck(
         'Word count',
         'needs_work',
-        `Only ${wordCount} words — on the thin side for AI citation.`,
-        'Aim for at least 300 words of substantive body content. Expand your key points with more detail and context.'
+        `Only ${wordCount} words. On the thin side for a page worth citing.`,
+        'Aim for 300 words minimum. Expand your main points with more detail.'
       )
     )
   } else {
@@ -219,8 +219,8 @@ function scoreQuotable($: cheerio.CheerioAPI): { score: number; checks: Check[] 
       makeCheck(
         'Word count',
         'critical',
-        `Only ${wordCount} words — far too thin for AI crawlers to extract meaningful content.`,
-        'Add substantial written content (300+ words). AI models need enough text to understand and quote your page.'
+        `Only ${wordCount} words. Too thin to be worth indexing or citing.`,
+        'Add more content. 300 words minimum, 600+ is better. Without it, there is nothing to quote.'
       )
     )
   }
@@ -229,7 +229,7 @@ function scoreQuotable($: cheerio.CheerioAPI): { score: number; checks: Check[] 
   const h1Count = $('h1').length
   if (h1Count === 1) {
     score += 5
-    checks.push(makeCheck('Single H1', 'good', `Exactly one H1 tag found: "${$('h1').first().text().trim().slice(0, 80)}"`))
+    checks.push(makeCheck('Single H1', 'good', `One H1 found: "${$('h1').first().text().trim().slice(0, 80)}"`))
   } else if (h1Count === 0) {
     score += 2
     checks.push(
@@ -237,7 +237,7 @@ function scoreQuotable($: cheerio.CheerioAPI): { score: number; checks: Check[] 
         'Single H1',
         'needs_work',
         'No H1 tag found on this page.',
-        'Add a single, descriptive H1 tag that clearly summarises the page topic.'
+        'Add a single, descriptive H1 that clearly summarises the page topic.'
       )
     )
   } else {
@@ -246,8 +246,8 @@ function scoreQuotable($: cheerio.CheerioAPI): { score: number; checks: Check[] 
       makeCheck(
         'Single H1',
         'needs_work',
-        `${h1Count} H1 tags found — only one is recommended.`,
-        'Consolidate your H1 tags into a single, primary heading that represents the page topic.'
+        `${h1Count} H1 tags found. Only one is needed.`,
+        'Pick one H1 and make it the main heading. Remove or demote the others.'
       )
     )
   }
@@ -266,15 +266,15 @@ function scoreQuotable($: cheerio.CheerioAPI): { score: number; checks: Check[] 
   }
   if (headings.length === 0 || hierarchyOk) {
     score += 4
-    checks.push(makeCheck('Heading hierarchy', 'good', 'Headings follow a logical H1 → H2 → H3 order.'))
+    checks.push(makeCheck('Heading hierarchy', 'good', 'Headings follow a logical H1 > H2 > H3 order.'))
   } else {
     score += 2
     checks.push(
       makeCheck(
         'Heading hierarchy',
         'needs_work',
-        'Heading levels are skipped (e.g., H1 → H3).',
-        'Ensure headings descend in order without skipping levels. This helps AI understand the structure of your content.'
+        'Heading levels are skipped (e.g., H1 straight to H3).',
+        'Keep headings in order: H1, then H2, then H3. Skipping levels confuses crawlers and readers.'
       )
     )
   }
@@ -283,14 +283,14 @@ function scoreQuotable($: cheerio.CheerioAPI): { score: number; checks: Check[] 
   const hasList = $('ul, ol, table').length > 0
   if (hasList) {
     score += 5
-    checks.push(makeCheck('Lists / tables', 'good', 'Structured content (lists or tables) found — great for AI extraction.'))
+    checks.push(makeCheck('Lists / tables', 'good', 'Lists or tables found. Structured content is easy to extract and cite.'))
   } else {
     checks.push(
       makeCheck(
         'Lists / tables',
         'needs_work',
         'No lists or tables found.',
-        'Add bullet lists, numbered lists, or tables to present information in a structured format AI models can easily extract.'
+        'Add bullet lists, numbered lists, or tables. Structured content is far easier to index and quote than dense paragraphs.'
       )
     )
   }
@@ -304,21 +304,21 @@ function scoreQuotable($: cheerio.CheerioAPI): { score: number; checks: Check[] 
     const avgPLength = totalWords / paragraphs.length
     if (avgPLength <= 200) {
       score += 3
-      checks.push(makeCheck('Paragraph length', 'good', `Average paragraph is ${Math.round(avgPLength)} words — concise and scannable.`))
+      checks.push(makeCheck('Paragraph length', 'good', `Average paragraph is ${Math.round(avgPLength)} words. Concise and easy to read.`))
     } else {
       score += 1
       checks.push(
         makeCheck(
           'Paragraph length',
           'needs_work',
-          `Average paragraph is ${Math.round(avgPLength)} words — too long.`,
-          'Break long paragraphs into shorter chunks (under 100 words each). AI models and readers both prefer shorter paragraphs.'
+          `Average paragraph is ${Math.round(avgPLength)} words. Too long.`,
+          'Break paragraphs into chunks under 100 words. Easier to read, easier to quote.'
         )
       )
     }
   } else {
     score += 3
-    checks.push(makeCheck('Paragraph length', 'good', 'No paragraphs to measure — N/A.'))
+    checks.push(makeCheck('Paragraph length', 'good', 'No paragraphs to measure. N/A.'))
   }
 
   // 6. FAQ / Q&A structure (bonus up to 3 pts, capped at 25 total)
@@ -336,14 +336,14 @@ function scoreQuotable($: cheerio.CheerioAPI): { score: number; checks: Check[] 
     $('details, summary').length > 2
   if (hasJsonLdFaq || hasFaqPattern) {
     score += 3
-    checks.push(makeCheck('FAQ / Q&A structure', 'good', 'FAQ or Q&A structure detected — excellent for featured snippets and AI answers.'))
+    checks.push(makeCheck('FAQ / Q&A structure', 'good', 'FAQ structure detected. One of the best formats for appearing in AI answers.'))
   } else {
     checks.push(
       makeCheck(
         'FAQ / Q&A structure',
         'needs_work',
         'No FAQ or Q&A structure detected.',
-        'Add a FAQ section with FAQPage JSON-LD schema. This significantly increases your chance of being cited in AI-generated answers.'
+        'Add a FAQ section with FAQPage schema markup. It is one of the highest-leverage things you can do for AI search visibility.'
       )
     )
   }
@@ -351,7 +351,7 @@ function scoreQuotable($: cheerio.CheerioAPI): { score: number; checks: Check[] 
   return { score: Math.min(score, 25), checks }
 }
 
-// ─── UNDERSTANDABLE ──────────────────────────────────────────────────────────
+// ── UNDERSTANDABLE ────────────────────────────────────────────────────────────
 
 function scoreUnderstandable($: cheerio.CheerioAPI): { score: number; checks: Check[] } {
   const checks: Check[] = []
@@ -365,7 +365,7 @@ function scoreUnderstandable($: cheerio.CheerioAPI): { score: number; checks: Ch
         'Title tag',
         'critical',
         'No title tag found.',
-        'Add a descriptive <title> tag (30–60 characters) that clearly describes the page content.'
+        'Add a descriptive <title> tag (30-60 characters) that clearly describes the page content.'
       )
     )
   } else if (title.length >= 30 && title.length <= 60) {
@@ -373,13 +373,13 @@ function scoreUnderstandable($: cheerio.CheerioAPI): { score: number; checks: Ch
     checks.push(makeCheck('Title tag', 'good', `Title is ${title.length} chars: "${title.slice(0, 80)}"`))
   } else {
     score += 3
-    const hint = title.length < 30 ? 'too short — expand it' : 'too long — may be truncated in search results'
+    const hint = title.length < 30 ? 'too short, expand it' : 'too long, likely gets cut off in search results'
     checks.push(
       makeCheck(
         'Title tag',
         'needs_work',
         `Title is ${title.length} chars (${hint}): "${title.slice(0, 80)}"`,
-        'Aim for 30–60 characters. Include your primary keyword and brand name.'
+        'Aim for 30-60 characters. Include your primary keyword and brand name.'
       )
     )
   }
@@ -394,12 +394,12 @@ function scoreUnderstandable($: cheerio.CheerioAPI): { score: number; checks: Ch
         'Meta description',
         'critical',
         'No meta description found.',
-        'Add a meta description (120–160 characters) summarising the page. This is often used as the AI answer snippet source.'
+        'Add a meta description of 120-160 characters. It is often pulled directly into AI answers and search snippets.'
       )
     )
   } else if (metaDesc.length >= 120 && metaDesc.length <= 160) {
     score += 5
-    checks.push(makeCheck('Meta description', 'good', `Meta description is ${metaDesc.length} chars — ideal length.`))
+    checks.push(makeCheck('Meta description', 'good', `Meta description is ${metaDesc.length} chars. Ideal length.`))
   } else {
     score += 3
     const hint = metaDesc.length < 120 ? 'too short' : 'too long'
@@ -407,8 +407,8 @@ function scoreUnderstandable($: cheerio.CheerioAPI): { score: number; checks: Ch
       makeCheck(
         'Meta description',
         'needs_work',
-        `Meta description is ${metaDesc.length} chars (${hint}). Ideal is 120–160.`,
-        'Rewrite the meta description to be 120–160 characters. Include a clear call to action and primary keyword.'
+        `Meta description is ${metaDesc.length} chars (${hint}). Ideal is 120-160.`,
+        'Rewrite the meta description to be 120-160 characters. Include a clear call to action and primary keyword.'
       )
     )
   }
@@ -427,7 +427,7 @@ function scoreUnderstandable($: cheerio.CheerioAPI): { score: number; checks: Ch
         'Open Graph tags',
         'needs_work',
         `Missing ${missing}.`,
-        'Add both og:title and og:description to improve how your page appears when shared on social platforms and AI tools.'
+        'Add both og:title and og:description. They control how your page looks when shared on social and in AI previews.'
       )
     )
   } else {
@@ -436,7 +436,7 @@ function scoreUnderstandable($: cheerio.CheerioAPI): { score: number; checks: Ch
         'Open Graph tags',
         'needs_work',
         'No Open Graph tags found.',
-        'Add og:title, og:description, og:image, and og:url to the <head>. These help AI tools understand and preview your content.'
+        'Add og:title, og:description, og:image, and og:url to the <head>. These control social previews and help search tools understand your page.'
       )
     )
   }
@@ -445,7 +445,7 @@ function scoreUnderstandable($: cheerio.CheerioAPI): { score: number; checks: Ch
   const allImages = $('img').toArray()
   if (allImages.length === 0) {
     score += 5
-    checks.push(makeCheck('Image alt text', 'good', 'No images found — N/A.'))
+    checks.push(makeCheck('Image alt text', 'good', 'No images found. N/A.'))
   } else {
     const withAlt = allImages.filter((img) => {
       const alt = $(img).attr('alt')
@@ -454,15 +454,15 @@ function scoreUnderstandable($: cheerio.CheerioAPI): { score: number; checks: Ch
     const pct = Math.round((withAlt.length / allImages.length) * 100)
     if (pct === 100) {
       score += 5
-      checks.push(makeCheck('Image alt text', 'good', `All ${allImages.length} images have alt text — fully accessible.`))
+      checks.push(makeCheck('Image alt text', 'good', `All ${allImages.length} images have alt text.`))
     } else if (pct >= 50) {
       score += 3
       checks.push(
         makeCheck(
           'Image alt text',
           'needs_work',
-          `${pct}% of images (${withAlt.length}/${allImages.length}) have alt text.`,
-          'Add descriptive alt text to all images. This helps both accessibility and AI understanding of visual content.'
+          `${pct}% of images have alt text (${withAlt.length}/${allImages.length}).`,
+          'Add descriptive alt text to all images. It matters for accessibility and for how crawlers interpret your visuals.'
         )
       )
     } else {
@@ -471,7 +471,7 @@ function scoreUnderstandable($: cheerio.CheerioAPI): { score: number; checks: Ch
           'Image alt text',
           'critical',
           `Only ${pct}% of images have alt text (${withAlt.length}/${allImages.length}).`,
-          'Add descriptive alt text to all images immediately. Missing alt text is an accessibility failure and harms AI content understanding.'
+          'Add alt text to all images. Missing alt text is an accessibility failure and means crawlers cannot read your images.'
         )
       )
     }
@@ -481,14 +481,14 @@ function scoreUnderstandable($: cheerio.CheerioAPI): { score: number; checks: Ch
   const lang = $('html').attr('lang')
   if (lang) {
     score += 5
-    checks.push(makeCheck('Language attribute', 'good', `<html lang="${lang}"> is set — search engines and AI can identify the language.`))
+    checks.push(makeCheck('Language attribute', 'good', `lang="${lang}" is set on the html element. Language is clear to crawlers and assistive tech.`))
   } else {
     checks.push(
       makeCheck(
         'Language attribute',
         'needs_work',
         'No lang attribute on <html> element.',
-        'Add lang="en" (or the appropriate language code) to your <html> tag. This helps AI tools and assistive technologies understand the content language.'
+        'Add lang="en" to your <html> tag. One attribute tells every crawler what language the page is in.'
       )
     )
   }
@@ -496,7 +496,7 @@ function scoreUnderstandable($: cheerio.CheerioAPI): { score: number; checks: Ch
   return { score: Math.min(score, 25), checks }
 }
 
-// ─── TRUSTWORTHY ─────────────────────────────────────────────────────────────
+// ── TRUSTWORTHY ───────────────────────────────────────────────────────────────
 
 function scoreTrustworthy($: cheerio.CheerioAPI): { score: number; checks: Check[] } {
   const checks: Check[] = []
@@ -548,7 +548,7 @@ function scoreTrustworthy($: cheerio.CheerioAPI): { score: number; checks: Check
         'JSON-LD schema',
         'needs_work',
         'JSON-LD script tag found but contains invalid JSON.',
-        'Fix the JSON syntax in your schema markup. Use https://validator.schema.org to validate it.'
+        'Fix the JSON syntax in your schema markup. Use https://validator.schema.org to check it.'
       )
     )
   } else {
@@ -557,7 +557,7 @@ function scoreTrustworthy($: cheerio.CheerioAPI): { score: number; checks: Check
         'JSON-LD schema',
         'needs_work',
         'No JSON-LD structured data found.',
-        'Add JSON-LD schema markup to your page. Start with WebSite and Organization schemas, then add page-specific types like Article or Product.'
+        'Add JSON-LD schema to your page. Start with WebSite and Organization, then add page-specific types like Article or Product.'
       )
     )
   }
@@ -565,7 +565,7 @@ function scoreTrustworthy($: cheerio.CheerioAPI): { score: number; checks: Check
   // 2. Rich schema types
   if (foundTypes.length >= 2) {
     score += 6
-    checks.push(makeCheck('Rich schema types', 'good', `${foundTypes.length} schema types detected: ${foundTypes.join(', ')}.`))
+    checks.push(makeCheck('Rich schema types', 'good', `${foundTypes.length} schema types found: ${foundTypes.join(', ')}.`))
   } else if (foundTypes.length === 1) {
     score += 3
     checks.push(
@@ -573,7 +573,7 @@ function scoreTrustworthy($: cheerio.CheerioAPI): { score: number; checks: Check
         'Rich schema types',
         'needs_work',
         `Only 1 schema type found: ${foundTypes[0]}.`,
-        'Add more schema types relevant to your content (e.g., BreadcrumbList, WebSite, Organization). More types = more AI signals.'
+        'Add more schema types. BreadcrumbList, WebSite, Organization are good starting points.'
       )
     )
   } else {
@@ -581,8 +581,8 @@ function scoreTrustworthy($: cheerio.CheerioAPI): { score: number; checks: Check
       makeCheck(
         'Rich schema types',
         'critical',
-        'No recognisable schema types found.',
-        'Implement structured data with types like Organization, Article, Product, or FAQPage to signal content authority to AI models.'
+        'No recognised schema types found.',
+        'Add structured data. Organization, Article, Product, FAQPage -- pick what fits your page and implement it.'
       )
     )
   }
@@ -592,14 +592,14 @@ function scoreTrustworthy($: cheerio.CheerioAPI): { score: number; checks: Check
   if (hasAuthorInJsonLd || metaAuthor) {
     score += 6
     const source = hasAuthorInJsonLd ? 'JSON-LD structured data' : `meta author tag ("${metaAuthor}")`
-    checks.push(makeCheck('Author / publisher metadata', 'good', `Author or publisher information found in ${source}.`))
+    checks.push(makeCheck('Author / publisher metadata', 'good', `Author or publisher found in ${source}.`))
   } else {
     checks.push(
       makeCheck(
         'Author / publisher metadata',
         'needs_work',
         'No author or publisher metadata found.',
-        'Add an author or publisher field to your JSON-LD schema, or include a <meta name="author"> tag. This signals E-E-A-T (Experience, Expertise, Authoritativeness, Trustworthiness) to AI models.'
+        'Add an author or publisher to your JSON-LD schema, or a <meta name="author"> tag. A basic E-E-A-T signal that takes minutes to add.'
       )
     )
   }
@@ -611,14 +611,14 @@ function scoreTrustworthy($: cheerio.CheerioAPI): { score: number; checks: Check
     $('link[rel="apple-touch-icon"]').attr('href')
   if (favicon) {
     score += 6
-    checks.push(makeCheck('Favicon', 'good', `Favicon found: ${favicon}`))
+    checks.push(makeCheck('Favicon', 'good', 'Favicon is set.'))
   } else {
     checks.push(
       makeCheck(
         'Favicon',
         'needs_work',
         'No favicon found.',
-        'Add a favicon with <link rel="icon" href="/favicon.ico">. A favicon is a basic trust signal and improves brand recognition.'
+        'Add <link rel="icon" href="/favicon.ico"> to your <head>. Quick win, takes two minutes.'
       )
     )
   }
@@ -626,7 +626,7 @@ function scoreTrustworthy($: cheerio.CheerioAPI): { score: number; checks: Check
   return { score: Math.min(score, 25), checks }
 }
 
-// ─── ROUTE HANDLER ───────────────────────────────────────────────────────────
+// ── ROUTE HANDLER ─────────────────────────────────────────────────────────────
 
 export async function POST(request: NextRequest) {
   let body: { url?: string }
@@ -691,7 +691,6 @@ export async function POST(request: NextRequest) {
       }
     } else {
       renderingType = 'Estimated'
-      // Use raw for scoring
       $forScoring = $raw
     }
 

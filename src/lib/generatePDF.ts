@@ -5,7 +5,7 @@ const DARK = [12, 12, 12] as const
 const CARD = [22, 12, 12] as const
 const WHITE = [255, 255, 255] as const
 const GREY = [180, 180, 180] as const
-const LIGHT_GREY = [100, 100, 100] as const
+const LIGHT_GREY = [155, 155, 155] as const
 const GREEN = [34, 197, 94] as const
 const ORANGE = [251, 146, 60] as const
 
@@ -174,7 +174,7 @@ export async function generatePDF(scan: ScanResult): Promise<void> {
       doc.text(check.name, margin + 3, y + 5.5)
 
       // Detail
-      if (isGood) { doc.setTextColor(160, 160, 160) } else { doc.setTextColor(200, 200, 200) }
+      if (isGood) { doc.setTextColor(175, 175, 175) } else { doc.setTextColor(210, 210, 210) }
       doc.setFontSize(6)
       doc.setFont('helvetica', 'normal')
       doc.text(detailLines, margin + 3, y + 10)
@@ -205,7 +205,7 @@ export async function generatePDF(scan: ScanResult): Promise<void> {
     doc.setTextColor(...LIGHT_GREY)
     doc.setFontSize(5.5)
     doc.setFont('helvetica', 'normal')
-    doc.text('rebelmarketer.co.uk — AI Scanner Report', margin, 293)
+    doc.text('rebelmarketer.co.uk | AI Scanner Report', margin, 293)
     doc.text(`Page ${i} of ${pageCount}`, W - margin, 293, { align: 'right' })
   }
 
