@@ -1,6 +1,23 @@
 import { NextRequest, NextResponse } from 'next/server'
-import { Resend } from 'resend'
 import type { ScanResult } from '@/lib/types'
+
+async function sendEmail(apiKey: string, payload: {
+  from: string; to: string; subject: string; html: string; reply_to?: string
+}) {
+  const res = await fetch('https://api.resend.com/emails', {
+    method: 'POST',
+    headers: {
+      'Authorization': `Bearer ${apiKey}`,
+      'Content-Type': 'application/json',
+    },
+    body: JSON.stringify(payload),
+  })
+  if (!res.ok) {
+    const err = await res.text()
+    throw new Error(`Resend API error ${res.status}: ${err}`)
+  }
+  return res.json()
+}
 
 const TO_EMAIL = 'djlangrish@gmail.com'
 
@@ -68,7 +85,7 @@ export async function POST(request: NextRequest) {
     }, { status: 500 })
   }
 
-  const resend = new Resend(process.env.RESEND_API_KEY)
+  const apiKey = process.env.RESEND_API_KEY!
   const FROM_EMAIL = process.env.FROM_EMAIL || 'Rebel Scanner <onboarding@resend.dev>'
   const domain = getDomain(scan.url)
 
@@ -123,14 +140,14 @@ export async function POST(request: NextRequest) {
 
   try {
     await Promise.all([
-      resend.emails.send({
+      sendEmail(apiKey, {
         from: FROM_EMAIL,
         to: TO_EMAIL,
         subject: `New quote request: ${domain} — ${scan.overall_score}/100`,
         html: danEmailHtml,
-        replyTo: email,
+        reply_to: email,
       }),
-      resend.emails.send({
+      sendEmail(apiKey, {
         from: FROM_EMAIL,
         to: email,
         subject: `Your AI Scanner results for ${domain}`,
